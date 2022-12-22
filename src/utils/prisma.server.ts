@@ -1,20 +1,15 @@
 import { PrismaClient } from "@prisma/client";
-let prisma: PrismaClient;
+// let prisma: PrismaClient;
 declare global {
   var __db: PrismaClient | undefined;
 }
 
+const prisma = new PrismaClient();
 
-if (process.env.NODE_ENV === "production") {
-  prisma = new PrismaClient();
+if (prisma) {
   prisma.$connect();
-  console.log("success")
 } else {
-  if (!global.__db) {
-    global.__db = new PrismaClient();
-    global.__db.$connect();
-  }
-  prisma = global.__db;
+  console.log("database has undefined");
 }
 
 export * from "@prisma/client";

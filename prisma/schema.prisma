@@ -42,7 +42,7 @@ model User {
   updatedAt      DateTime    @updatedAt
   profile        Profile?
   corporation    Corporation @relation(fields: [corporationId], references: [id])
-  corporationId  Int         @unique
+  corporationId  Int
   Doctor         Doctor?
 }
 
@@ -77,7 +77,7 @@ model Patient {
   createdAt       DateTime     @default(now())
   updatedAt       DateTime
   corporation     Corporation? @relation(fields: [corporationId], references: [id])
-  corporationId   Int          @unique
+  corporationId   Int
 }
 
 // model Appointment {
@@ -130,7 +130,7 @@ model Services {
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
   corporation    Corporation @relation(fields: [corporationId], references: [id])
-  corporationId  Int         @unique
+  corporationId  Int
 }
 
 // enum CURRENCY {
@@ -209,5 +209,5 @@ model Medicines {
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
   corporation    Corporation @relation(fields: [corporationId], references: [id])
-  corporationId  Int         @unique
+  corporationId  Int
 }

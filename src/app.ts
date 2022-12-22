@@ -3,6 +3,7 @@ import cors from "cors";
 import morgan from "morgan";
 import { PrismaClient } from "@prisma/client";
 import { route } from "./routes/user.routes";
+import { authRoutes } from "./routes/auth.routes";
 
 const app = express();
 require("dotenv").config();
@@ -20,6 +21,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/api", route);
+app.use("/api", authRoutes);
 
 app.listen(PORT, () => {
   console.log(`server has running in port: ${PORT}`);
