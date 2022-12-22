@@ -13,7 +13,8 @@ const PORT = process.env.PORT;
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors());
-
+// app.use(router);
+// 
 const prisma = new PrismaClient();
 
 app.get("/", (req: Request, res: Response) => {
