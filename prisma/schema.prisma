@@ -31,8 +31,11 @@ model Corporation {
   patient         Patient[]
   services        Services[]
   medicines       Medicines[]
+<<<<<<< HEAD
   pharmacy        Pharmacy?
   laboratory      Laboratory?
+=======
+>>>>>>> 9173ded (Services)
 }
 
 model User {
@@ -61,7 +64,11 @@ model Profile {
 }
 
 model Patient {
+<<<<<<< HEAD
   id              Int           @id @default(autoincrement())
+=======
+  id              Int          @id @default(autoincrement())
+>>>>>>> 9173ded (Services)
   firstName       String
   lastName        String
   documentNumber  String
@@ -76,6 +83,7 @@ model Patient {
   physicalHistory String
   image           String?
   jod             String?
+<<<<<<< HEAD
   createdAt       DateTime      @default(now())
   updatedAt       DateTime
   corporation     Corporation?  @relation(fields: [corporationId], references: [id])
@@ -293,4 +301,142 @@ model Laboratory {
   medicalTest   MedicalTest[]
   corporation   Corporation   @relation(fields: [corporationId], references: [id])
   corporationId Int           @unique
+=======
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime
+  corporation     Corporation? @relation(fields: [corporationId], references: [id])
+  corporationId   Int
+}
+
+// model Appointment {
+//   id               Int           @id @default(autoincrement())
+//   corporationId    String
+//   documentNumber   String
+//   firstName        String
+//   lastName         String
+//   numberPhone      String
+//   appointmentDate  DateTime
+//   doctorValue      String
+//   totalServices    Float
+//   createdAt        DateTime      @default(now())
+//   updatedAt        DateTime      @updatedAt
+//   // patientId String?
+//   typeVoucher      TYPEVOUCHER?
+//   typeDocument     TYPEDOCUMENT?
+//   documentIdentity String?
+//   payment PAYMENT?
+//   status           Boolean       @default(false)
+//   // servicesDes String
+// }
+
+// enum TYPEVOUCHER {
+//   BOLETA
+//   FACTURA
+//   NOTA_DE_VENTA
+// }
+
+// enum TYPEDOCUMENT {
+//   DOC
+//   RUC
+// }
+
+// enum PAYMENT {
+//   EFECTIVO
+//   TARJETA
+// }
+
+model Services {
+  id             Int         @id @default(autoincrement())
+  name           String
+  descrption     String?
+  category       String?
+  fullDescrption String?
+  price          Float
+  // currencyType   CURRENCY @default(PEN)
+  codInternal    Int         @unique
+  hasIgv         Boolean     @default(false)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  corporation    Corporation @relation(fields: [corporationId], references: [id])
+  corporationId  Int
+}
+
+// enum CURRENCY {
+//   PEN
+//   USD
+// }
+// model Triage{
+//   id Int @id @default(autoincrement())
+//   weight Float
+//   height Float
+//   temperature Float
+//   heardRate Int
+//   bloodPressure String
+//   daysSick Int
+//   sature Int @default(0)
+//   observations String? @default("")
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+// model MedicalTest{
+//   id Int  @id @default(autoincrement())
+//   observations String? @default("")
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+// model Recipes{
+//   id Int @id @default(autoincrement())
+//   recipesDes Json
+//   observations String? @default("")
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+// model TestInfo{
+//   id Int @id @default(autoincrement())
+//   link String?
+//   name String
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+// model Receipts{
+//   id Int @id @default(autoincrement())
+//   observaions String? @default("")
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+// model Diagnostics{
+//   id Int @id @default(autoincrement())
+//   anamnesis String
+//   clinicalExam String
+//   diagnostic String
+//   observations String @default("")
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+model Doctor {
+  id              Int      @id @default(autoincrement())
+  medicalRelation String
+  cieCod          Int?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  //new change
+  user            User     @relation(fields: [userId], references: [id])
+  userId          Int      @unique
+}
+
+model Medicines {
+  id             Int         @id @default(autoincrement())
+  name           String
+  description    String?
+  category       String?
+  fullDescrption String?
+  price          Float
+  // currencyType CURRENCY @default(PEN)
+  codInternal    Int         @unique
+  hasIgv         Boolean     @default(false)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  corporation    Corporation @relation(fields: [corporationId], references: [id])
+  corporationId  Int
+>>>>>>> 9173ded (Services)
 }
