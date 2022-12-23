@@ -31,6 +31,8 @@ model Corporation {
   patient         Patient[]
   services        Services[]
   medicines       Medicines[]
+  pharmacy        Pharmacy?
+  laboratory      Laboratory?
 }
 
 model User {
@@ -59,7 +61,7 @@ model Profile {
 }
 
 model Patient {
-  id              Int          @id @default(autoincrement())
+  id              Int           @id @default(autoincrement())
   firstName       String
   lastName        String
   documentNumber  String
@@ -74,140 +76,221 @@ model Patient {
   physicalHistory String
   image           String?
   jod             String?
-  createdAt       DateTime     @default(now())
+  createdAt       DateTime      @default(now())
   updatedAt       DateTime
-  corporation     Corporation? @relation(fields: [corporationId], references: [id])
+  corporation     Corporation?  @relation(fields: [corporationId], references: [id])
   corporationId   Int
+  appointment     Appointment[]
 }
 
-// model Appointment {
-//   id               Int           @id @default(autoincrement())
-//   corporationId    String
-//   documentNumber   String
-//   firstName        String
-//   lastName         String
-//   numberPhone      String
-//   appointmentDate  DateTime
-//   doctorValue      String
-//   totalServices    Float
-//   createdAt        DateTime      @default(now())
-//   updatedAt        DateTime      @updatedAt
-//   // patientId String?
-//   typeVoucher      TYPEVOUCHER?
-//   typeDocument     TYPEDOCUMENT?
-//   documentIdentity String?
-//   payment PAYMENT?
-//   status           Boolean       @default(false)
-//   // servicesDes String
-// }
+model Appointment {
+  id               Int                   @id @default(autoincrement())
+  corporationId    String
+  documentNumber   String
+  firstName        String
+  lastName         String
+  numberPhone      String
+  appointmentDate  DateTime
+  doctorValue      String
+  totalServices    Float
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+  patient          Patient?              @relation(fields: [patientId], references: [id])
+  patientId        Int
+  typeVoucher      TYPEVOUCHER?
+  typeDocument     TYPEDOCUMENT?
+  documentIdentity String?
+  payment          PAYMENT?
+  status           Boolean               @default(false)
+  servicesDesc     String[]
+  triage           Triage?
+  recipes          Recipes?
+  receipts         Receipts?
+  diagnostics      Diagnostics?
+  medicalTests     MedicalTest?
+  doctor           Doctor                @relation(fields: [doctorId], references: [id])
+  doctorId         Int
+  services         AppointmentServices[]
+}
 
-// enum TYPEVOUCHER {
-//   BOLETA
-//   FACTURA
-//   NOTA_DE_VENTA
-// }
+model AppointmentServices {
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  appointmentId Int
+  services      Services    @relation(fields: [servicesId], references: [id])
+  servicesId    Int
 
-// enum TYPEDOCUMENT {
-//   DOC
-//   RUC
-// }
+  @@id([appointmentId, servicesId])
+}
 
-// enum PAYMENT {
-//   EFECTIVO
-//   TARJETA
-// }
+enum TYPEVOUCHER {
+  BOLETA
+  FACTURA
+  NOTA_DE_VENTA
+}
+
+enum TYPEDOCUMENT {
+  DOC
+  RUC
+}
+
+enum PAYMENT {
+  EFECTIVO
+  TARJETA
+}
 
 model Services {
-  id             Int         @id @default(autoincrement())
-  name           String
-  descrption     String?
-  category       String?
-  fullDescrption String?
-  price          Float
-  // currencyType   CURRENCY @default(PEN)
-  codInternal    Int         @unique
-  hasIgv         Boolean     @default(false)
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
-  corporation    Corporation @relation(fields: [corporationId], references: [id])
-  corporationId  Int
+  id              Int                   @id @default(autoincrement())
+  name            String
+  descrption      String?
+  category        String?
+  fullDescription String?
+  price           Float
+  currencyType    CURRENCY              @default(PEN)
+  codInternal     Int                   @unique
+  hasIgv          Boolean               @default(false)
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  corporation     Corporation           @relation(fields: [corporationId], references: [id])
+  corporationId   Int
+  appointment     AppointmentServices[]
 }
 
-// enum CURRENCY {
-//   PEN
-//   USD
-// }
-// model Triage{
-//   id Int @id @default(autoincrement())
-//   weight Float
-//   height Float
-//   temperature Float
-//   heardRate Int
-//   bloodPressure String
-//   daysSick Int
-//   sature Int @default(0)
-//   observations String? @default("")
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
-// model MedicalTest{
-//   id Int  @id @default(autoincrement())
-//   observations String? @default("")
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
-// model Recipes{
-//   id Int @id @default(autoincrement())
-//   recipesDes Json
-//   observations String? @default("")
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
-// model TestInfo{
-//   id Int @id @default(autoincrement())
-//   link String?
-//   name String
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
-// model Receipts{
-//   id Int @id @default(autoincrement())
-//   observaions String? @default("")
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
-// model Diagnostics{
-//   id Int @id @default(autoincrement())
-//   anamnesis String
-//   clinicalExam String
-//   diagnostic String
-//   observations String @default("")
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
+enum CURRENCY {
+  PEN
+  USD
+}
+
+model Triage {
+  id            Int         @id @default(autoincrement())
+  weight        Float
+  height        Float
+  temperature   Float
+  heardRate     Int
+  bloodPressure String
+  daysSick      Int
+  sature        Int         @default(0)
+  observations  String?     @default("")
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  appointmentId Int         @unique
+}
+
+model MedicalTest {
+  id            Int         @id @default(autoincrement())
+  observations  String?     @default("")
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  status        Boolean     @default(false)
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  appointmentId Int         @unique
+  doctor        Doctor      @relation(fields: [doctorId], references: [id])
+  doctorId      Int         @unique
+  tests         TestInfo[]
+  laboratory    Laboratory  @relation(fields: [laboratoryId], references: [id])
+  laboratoryId  Int
+}
+
+model Recipes {
+  id            Int                @id @default(autoincrement())
+  recipesDes    Json
+  observations  String?            @default("")
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  appointment   Appointment        @relation(fields: [oppointmentId], references: [id])
+  oppointmentId Int                @unique
+  doctor        Doctor             @relation(fields: [doctorId], references: [id])
+  doctorId      Int
+  recipesDesc   Json[]
+  medicines     MedicinesRecipes[]
+}
+
+model TestInfo {
+  id            Int         @id @default(autoincrement())
+  link          String?
+  name          String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  medicalTest   MedicalTest @relation(fields: [medicalTestId], references: [id])
+  medicalTestId Int
+}
+
+model Receipts {
+  id            Int         @id @default(autoincrement())
+  observations  String?     @default("")
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  appointmentId Int         @unique
+}
+
+model Diagnostics {
+  id            Int         @id @default(autoincrement())
+  anamnesis     String
+  clinicalExam  String
+  diagnostic    String[]
+  observations  String?     @default("")
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  appointmentId Int         @unique
+  doctor        Doctor      @relation(fields: [doctorId], references: [id])
+  doctorId      Int
+}
+
 model Doctor {
-  id              Int      @id @default(autoincrement())
+  id              Int           @id @default(autoincrement())
   medicalRelation String
   cieCod          Int?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  //new change
-  user            User     @relation(fields: [userId], references: [id])
-  userId          Int      @unique
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  user            User          @relation(fields: [userId], references: [id])
+  userId          Int           @unique
+  appointment     Appointment[]
+  medicalTest     MedicalTest[]
+  recipes         Recipes[]
+  diagnostics     Diagnostics[]
 }
 
 model Medicines {
-  id             Int         @id @default(autoincrement())
-  name           String
-  description    String?
-  category       String?
-  fullDescrption String?
-  price          Float
-  // currencyType CURRENCY @default(PEN)
-  codInternal    Int         @unique
-  hasIgv         Boolean     @default(false)
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
-  corporation    Corporation @relation(fields: [corporationId], references: [id])
-  corporationId  Int
+  id              Int                @id @default(autoincrement())
+  name            String
+  description     String?
+  category        String?
+  fullDescription String?
+  price           Float
+  currencyType    CURRENCY           @default(PEN)
+  codInternal     Int                @unique
+  hasIgv          Boolean            @default(false)
+  quantity        Int
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  corporation     Corporation        @relation(fields: [corporationId], references: [id])
+  corporationId   Int
+  recipes         MedicinesRecipes[]
+  pharmacy        Pharmacy           @relation(fields: [pharmacyId], references: [id])
+  pharmacyId      Int
+}
+
+model MedicinesRecipes {
+  recipes     Recipes   @relation(fields: [recipesId], references: [id])
+  recipesId   Int
+  medicines   Medicines @relation(fields: [medicinesId], references: [id])
+  medicinesId Int
+
+  @@id([recipesId, medicinesId])
+}
+
+model Pharmacy {
+  id            Int         @id @default(autoincrement())
+  medicines     Medicines[]
+  corporation   Corporation @relation(fields: [corporationId], references: [id])
+  corporationId Int         @unique
+}
+
+model Laboratory {
+  id            Int           @id @default(autoincrement())
+  medicalTest   MedicalTest[]
+  corporation   Corporation   @relation(fields: [corporationId], references: [id])
+  corporationId Int           @unique
 }
