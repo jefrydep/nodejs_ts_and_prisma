@@ -38,7 +38,7 @@ model Corporation {
 
 model User {
   id             Int         @id @default(autoincrement())
-  documentNumber String      @unique
+  documentNumber String?     @unique
   password       String
   role           Role        @default(ADMIN)
   createdAt      DateTime    @default(now())
@@ -66,12 +66,12 @@ model Patient {
   id              Int           @id @default(autoincrement())
   firstName       String
   lastName        String
-  documentNumber  String
+  documentNumber  String        
   dateBirth       String
   location        String?
   gender          String
   numberPhone     String?
-  departament     String?
+  department     String?
   province        String?
   district        String?
   bloodType       String
@@ -88,7 +88,7 @@ model Patient {
 model Appointment {
   id               Int                   @id @default(autoincrement())
   corporationId    String
-  documentNumber   String
+  documentNumber   String                
   firstName        String
   lastName         String
   numberPhone      String

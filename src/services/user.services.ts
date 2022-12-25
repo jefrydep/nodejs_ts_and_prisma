@@ -1,5 +1,5 @@
 import { Corporation, Role, User } from "@prisma/client";
-import bcrypt from "bcryptjs";
+import bcrypt  from "bcryptjs";
 import { profilePick, userPick, userProfilePick } from "../utils/format.server";
 import { prisma } from "../utils/prisma.server";
 

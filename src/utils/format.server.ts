@@ -1,4 +1,4 @@
-import { Profile, User } from "@prisma/client";
+import { Patient, Profile, User } from "@prisma/client";
 
 export type userPick = Pick<
   User,
@@ -21,8 +21,29 @@ export type userProfilePick = Pick<
   | "degree"
   | "image"
 >;
+
+export type patientPick = Pick<
+  Patient,
+  |"firstName"
+  | "lastName"
+  | "documentNumber"
+  | "dateBirth"
+  | "location"
+  | "gender"
+  | "numberPhone"
+  | "department"
+  | "province"
+  | "district"
+  | "bloodType"
+  | "physicalHistory"
+  | "image"
+  | "jod"
+  | "corporationId"
+>;
+
 export type errorProp ={
   errorContent?: string;
   status: number;
   message:string;
 }
+
