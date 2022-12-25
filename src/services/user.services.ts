@@ -1,39 +1,82 @@
-import { Corporation, PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs";
-import { userPick } from "../utils/format.server";
-const prisma = new PrismaClient();
+import { Corporation, Role, User } from "@prisma/client";
+import bcrypt  from "bcryptjs";
+import { profilePick, userPick, userProfilePick } from "../utils/format.server";
+import { prisma } from "../utils/prisma.server";
 
-export const getUser = async () => {
-  try {
-    const result = await prisma.user.findMany({
-      select: {
-        documentNumber: true,
-        password: true,
-        role: true,
-      },
-    });
-    return result;
-  } catch (error) {
-    throw error;
+export class userServices {
+  static async getAll() {
+    try {
+      const result = await prisma.user.findMany({
+        select: {
+          documentNumber: true,
+          password: true,
+          role: true,
+          corporationId: true,
+        },
+      });
+      return result;
+    } catch (error) {
+      throw error;
+    }
   }
-};
-export const createUser = async (
-  data: userPick & { corporationId: Corporation["id"] }
-) => {
-  try {
-    const { corporationId, documentNumber, role } = data;
-    const passwordHash = await bcrypt.hash(data.password, 10);
-    const result = await prisma.user.create({
-      data: {
+  static async create(
+    data: userProfilePick & { corporationId: Corporation["id"] }
+  ) {
+    try {
+      const {
+        corporationId,
         documentNumber,
-        password: passwordHash,
         role,
-        corporation: { connect: { id: corporationId } },
-      },
-    });
-    return result;
-  } catch (error) {
-    throw error;
+        firstName,
+        lastName,
+        phone,
+        email,
+        degree,
+        image,
+      } = data;
+      const passwordHash = await bcrypt.hash(data.password, 10);
+      const newUser = await prisma.user.create({
+        data: {
+          documentNumber,
+          password: passwordHash,
+          role,
+          corporation: { connect: { id: corporationId } },
+        },
+      });
+      await prisma.profile.create({
+        data: {
+          firstName,
+          lastName,
+          phone,
+          email,
+          degree,
+          image,
+          user: { connect: { id: newUser.id } },
+        },
+      });
+      return newUser;
+    } catch (error) {
+      throw error;
+    }
   }
-};
-
+  static async delete(id: User["id"]) {
+    try {
+      const result = await prisma.user.delete({
+        where: { id },
+      });
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+  static async updateRole(id: User["id"], role: User["role"]) {
+    try {
+      const result = await prisma.user.update({
+        where: { id },
+        data: { role },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+}

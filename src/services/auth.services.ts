@@ -16,7 +16,7 @@ export class authServices {
         documentNumber:true,
         password:true,
         role:true,
-        corporationId:true
+        corporationId:true,
       } });
       if (!user) return false;
       const verifyPassword = await bcrypt.compare(password, user.password);
