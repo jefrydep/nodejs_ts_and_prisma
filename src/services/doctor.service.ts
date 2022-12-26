@@ -1,0 +1,56 @@
+import { Doctor, User } from "@prisma/client";
+import { prisma } from "../utils/prisma.server";
+import { doctorPick } from "~/utils/format.server";
+
+export class doctorServices {
+  static async getAll() {
+    try {
+      const result = await prisma.doctor.findMany({
+        select: {
+          cieCod: true,
+          userId: true,
+          medicalRelation: true,
+          user: {
+            include: {
+              profile: true,
+            },
+          },
+        },
+      });
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+  static async create(data: doctorPick & { userId: User["id"] }) {
+    try {
+      const { cieCod, medicalRelation, userId } = data;
+      const newDoctor = await prisma.doctor.create({
+        data: {
+          medicalRelation,
+          cieCod,
+          user: { connect: { id: userId } },
+        },
+      });
+
+      return newDoctor;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async delete(id: Doctor["id"]) {
+    try {
+      const result = await prisma.doctor.delete({
+        where: { id },
+      });
+      console.log(result)
+      return result;
+    } catch (error) {
+      console.log(error)
+      throw error;
+    }
+  }
+
+  static async update() {}
+}
