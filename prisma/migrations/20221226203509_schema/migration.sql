@@ -44,7 +44,7 @@ CREATE TABLE "User" (
 CREATE TABLE "Profile" (
     "id" SERIAL NOT NULL,
     "firstName" TEXT NOT NULL,
-    "lastname" TEXT NOT NULL,
+    "lastName" TEXT NOT NULL,
     "phone" TEXT,
     "email" TEXT NOT NULL,
     "degree" TEXT,
@@ -64,7 +64,7 @@ CREATE TABLE "Patient" (
     "location" TEXT,
     "gender" TEXT NOT NULL,
     "numberPhone" TEXT,
-    "departament" TEXT,
+    "department" TEXT,
     "province" TEXT,
     "district" TEXT,
     "bloodType" TEXT NOT NULL,
@@ -194,7 +194,6 @@ CREATE TABLE "Receipts" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "appointmentId" INTEGER NOT NULL,
-    "doctorId" INTEGER NOT NULL,
 
     CONSTRAINT "Receipts_pkey" PRIMARY KEY ("id")
 );
@@ -257,6 +256,7 @@ CREATE TABLE "MedicinesRecipes" (
 -- CreateTable
 CREATE TABLE "Pharmacy" (
     "id" SERIAL NOT NULL,
+    "corporationId" INTEGER NOT NULL,
 
     CONSTRAINT "Pharmacy_pkey" PRIMARY KEY ("id")
 );
@@ -264,6 +264,9 @@ CREATE TABLE "Pharmacy" (
 -- CreateTable
 CREATE TABLE "Laboratory" (
     "id" SERIAL NOT NULL,
+    "corporationId" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Laboratory_pkey" PRIMARY KEY ("id")
 );
@@ -304,11 +307,17 @@ CREATE UNIQUE INDEX "Doctor_userId_key" ON "Doctor"("userId");
 -- CreateIndex
 CREATE UNIQUE INDEX "Medicines_codInternal_key" ON "Medicines"("codInternal");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Pharmacy_corporationId_key" ON "Pharmacy"("corporationId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Laboratory_corporationId_key" ON "Laboratory"("corporationId");
+
 -- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_corporationId_fkey" FOREIGN KEY ("corporationId") REFERENCES "Corporation"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Profile" ADD CONSTRAINT "Profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Profile" ADD CONSTRAINT "Profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Patient" ADD CONSTRAINT "Patient_corporationId_fkey" FOREIGN KEY ("corporationId") REFERENCES "Corporation"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -353,9 +362,6 @@ ALTER TABLE "TestInfo" ADD CONSTRAINT "TestInfo_medicalTestId_fkey" FOREIGN KEY 
 ALTER TABLE "Receipts" ADD CONSTRAINT "Receipts_appointmentId_fkey" FOREIGN KEY ("appointmentId") REFERENCES "Appointment"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Receipts" ADD CONSTRAINT "Receipts_doctorId_fkey" FOREIGN KEY ("doctorId") REFERENCES "Doctor"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "Diagnostics" ADD CONSTRAINT "Diagnostics_appointmentId_fkey" FOREIGN KEY ("appointmentId") REFERENCES "Appointment"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -375,3 +381,9 @@ ALTER TABLE "MedicinesRecipes" ADD CONSTRAINT "MedicinesRecipes_recipesId_fkey" 
 
 -- AddForeignKey
 ALTER TABLE "MedicinesRecipes" ADD CONSTRAINT "MedicinesRecipes_medicinesId_fkey" FOREIGN KEY ("medicinesId") REFERENCES "Medicines"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Pharmacy" ADD CONSTRAINT "Pharmacy_corporationId_fkey" FOREIGN KEY ("corporationId") REFERENCES "Corporation"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Laboratory" ADD CONSTRAINT "Laboratory_corporationId_fkey" FOREIGN KEY ("corporationId") REFERENCES "Corporation"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

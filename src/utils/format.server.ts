@@ -41,6 +41,17 @@ export type patientPick = Pick<
   | "corporationId"
 >;
 
+export type patientUpdatePick = Pick<
+  Patient,
+  | "location"
+  | "numberPhone"
+  | "department"
+  | "province"
+  | "district"
+  | "image"
+  | "jod"
+>;
+
 export type errorProp ={
   errorContent?: string;
   status: number;
