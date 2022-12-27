@@ -52,5 +52,19 @@ export class doctorServices {
     }
   }
 
-  static async update() {}
+  static async update(id:Doctor["id"],cieCod:Doctor["cieCod"],medicalRelation:Doctor["medicalRelation"]) {
+    try {
+      const result = await prisma.doctor.update({
+        where:{id},
+        data:{
+          cieCod,
+          medicalRelation
+        }
+      })
+      return result;
+    } catch (error) {
+      throw error;
+      
+    }
+  }
 }

@@ -6,64 +6,62 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
- 
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  USER
+  PHARMACY
+  DOCTOR
+}
 
-model corporation {
-  id               String      @id @default(auto()) @map("_id") @db.ObjectId
-  name             String
-  ruc              String?
-  full_Description String?
-  api_route        String?
-  token            String?
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
-  User             User[]
-  patient          patient[]
-  Services         Services[]
-  Medicines        Medicines[]
+model Corporation {
+  id              Int         @id @default(autoincrement())
+  name            String
+  ruc             String?
+  fullDescription String?
+  apiRoute        String?
+  token           String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  user            User[]
+  patient         Patient[]
+  services        Services[]
+  medicines       Medicines[]
+  pharmacy        Pharmacy?
+  laboratory      Laboratory?
 }
 
 model User {
-  id             String       @id @default(auto()) @map("_id") @db.ObjectId
-  documentNumber String       @unique
+  id             Int         @id @default(autoincrement())
+  documentNumber String      @unique
   password       String
-  role           Role         @default(ADMIN)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  //profile   Profile
-  corporation    corporation? @relation(fields: [corporationId], references: [id])
-  corporationId  String?      @db.ObjectId
-  isActive       Boolean      @default(false)
-  profile        profile?
-  Doctors        Doctors?
+  role           Role        @default(ADMIN)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  profile        Profile?
+  corporation    Corporation @relation(fields: [corporationId], references: [id])
+  corporationId  Int
+  Doctor         Doctor?
 }
 
-model profile {
-  user      User    @relation(fields: [userId], references: [id])
-  userId    String  @unique @db.ObjectId
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+model Profile {
+  id        Int     @id @default(autoincrement())
   firstName String
   lastName  String
   phone     String?
   email     String  @unique
   degree    String?
   image     String?
+  user      User    @relation(fields: [userId], references: [id],onDelete: Cascade)
+  userId    Int     @unique
 }
 
-enum Role {
-  SUPER_ADMIN
-  DOCTOR
-  ADMIN
-  PHARMACY
-  USER
-}
-
-model patient {
-  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+model Patient {
+  id              Int           @id @default(autoincrement())
   firstName       String
   lastName        String
   documentNumber  String
@@ -77,16 +75,16 @@ model patient {
   bloodType       String
   physicalHistory String
   image           String?
-  job             String?
-  appointment     Appointment[]
+  jod             String?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
-  corporation     corporation?  @relation(fields: [corporationId], references: [id])
-  corporationId   String?       @db.ObjectId
+  corporation     Corporation?  @relation(fields: [corporationId], references: [id])
+  corporationId   Int
+  appointment     Appointment[]
 }
 
 model Appointment {
-  id               String         @id @default(auto()) @map("_id") @db.ObjectId
+  id               Int                   @id @default(autoincrement())
   corporationId    String
   documentNumber   String
   firstName        String
@@ -95,25 +93,33 @@ model Appointment {
   appointmentDate  DateTime
   doctorValue      String
   totalServices    Float
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
-  patientId        String?        @db.ObjectId
-  patient          patient?       @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+  patient          Patient?              @relation(fields: [patientId], references: [id])
+  patientId        Int
   typeVoucher      TYPEVOUCHER?
   typeDocument     TYPEDOCUMENT?
   documentIdentity String?
   payment          PAYMENT?
-  status           Boolean        @default(false)
+  status           Boolean               @default(false)
   servicesDesc     String[]
-  servicesIds      String[]       @db.ObjectId
-  services         Services[]     @relation(fields: [servicesIds], references: [id])
   triage           Triage?
-  recipes          recipes?
-  receipts         receipts?
-  diagnostics      diagnostics?
-  medical_tests    medical_tests?
-  doctorId         String?        @db.ObjectId
-  doctor           Doctors?       @relation(fields: [doctorId], references: [id])
+  recipes          Recipes?
+  receipts         Receipts?
+  diagnostics      Diagnostics?
+  medicalTests     MedicalTest?
+  doctor           Doctor                @relation(fields: [doctorId], references: [id])
+  doctorId         Int
+  services         AppointmentServices[]
+}
+
+model AppointmentServices {
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  appointmentId Int
+  services      Services    @relation(fields: [servicesId], references: [id])
+  servicesId    Int
+
+  @@id([appointmentId, servicesId])
 }
 
 enum TYPEVOUCHER {
@@ -123,7 +129,7 @@ enum TYPEVOUCHER {
 }
 
 enum TYPEDOCUMENT {
-  DNI
+  DOC
   RUC
 }
 
@@ -133,21 +139,20 @@ enum PAYMENT {
 }
 
 model Services {
-  id               String        @id @default(auto()) @map("_id") @db.ObjectId
-  name             String
-  description      String?
-  category         String?
-  full_description String?
-  price            Float
-  currency_type    CURRENCY      @default(PEN)
-  cod_internal     Int           @unique
-  has_igv          Boolean       @default(false)
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
-  appointment      Appointment[] @relation(fields: [appointmentIds], references: [id])
-  appointmentIds   String[]      @db.ObjectId
-  corporation      corporation?  @relation(fields: [corporationId], references: [id], onDelete: Cascade)
-  corporationId    String        @db.ObjectId
+  id              Int                   @id @default(autoincrement())
+  name            String
+  descrption      String?
+  category        String?
+  fullDescription String?
+  price           Float
+  currencyType    CURRENCY              @default(PEN)
+  codInternal     Int                   @unique
+  hasIgv          Boolean               @default(false)
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  corporation     Corporation           @relation(fields: [corporationId], references: [id])
+  corporationId   Int
+  appointment     AppointmentServices[]
 }
 
 enum CURRENCY {
@@ -156,112 +161,136 @@ enum CURRENCY {
 }
 
 model Triage {
-  id            String      @id @default(auto()) @map("_id") @db.ObjectId
-  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
-  appointmentId String      @unique @db.ObjectId
+  id            Int         @id @default(autoincrement())
   weight        Float
   height        Float
   temperature   Float
-  heartRate     Int
+  heardRate     Int
   bloodPressure String
   daysSick      Int
-  saturate      Int         @default(0)
+  sature        Int         @default(0)
   observations  String?     @default("")
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
-}
-
-model medical_tests {
-  id            String      @id @default(auto()) @map("_id") @db.ObjectId
-  observations  String?     @default("")
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  doctorId      String?     @db.ObjectId
-  doctor        Doctors?    @relation(fields: [doctorId], references: [id], onDelete: Cascade)
-  tests         testInfo[]
-  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
-  appointmentId String      @unique @db.ObjectId
-  status        Boolean     @default(false)
-}
-
-model recipes {
-  id            String      @id @default(auto()) @map("_id") @db.ObjectId
-  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
-  appointmentId String      @unique @db.ObjectId
-  doctorId      String?     @db.ObjectId
-  doctor        Doctors?    @relation(fields: [doctorId], references: [id], onDelete: Cascade)
-  medicinesIds  String[]    @db.ObjectId
-  medicines     Medicines[] @relation(fields: [medicinesIds], references: [id])
-  recipesDesc   Json[]
-  observations  String?     @default("")
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-}
-
-model testInfo {
-  id              String         @id @default(auto()) @map("_id") @db.ObjectId
-  link            String?
-  name            String
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
-  medical_tests   medical_tests? @relation(fields: [medical_testsId], references: [id], onDelete: Cascade)
-  medical_testsId String?        @db.ObjectId
-}
-
-model receipts {
-  id            String      @id @default(auto()) @map("_id") @db.ObjectId
   appointment   Appointment @relation(fields: [appointmentId], references: [id])
-  appointmentId String      @unique @db.ObjectId
-  doctorId      String?     @db.ObjectId
-  doctor        Doctors?    @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  appointmentId Int         @unique
+}
+
+model MedicalTest {
+  id            Int         @id @default(autoincrement())
   observations  String?     @default("")
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+  status        Boolean     @default(false)
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  appointmentId Int         @unique
+  doctor        Doctor      @relation(fields: [doctorId], references: [id])
+  doctorId      Int         @unique
+  tests         TestInfo[]
+  laboratory    Laboratory  @relation(fields: [laboratoryId], references: [id])
+  laboratoryId  Int
 }
 
-model diagnostics {
-  id            String      @id @default(auto()) @map("_id") @db.ObjectId
-  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
-  appointmentId String      @unique @db.ObjectId
-  doctorId      String?     @db.ObjectId
-  doctor        Doctors?    @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+model Recipes {
+  id            Int                @id @default(autoincrement())
+  recipesDes    Json
+  observations  String?            @default("")
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  appointment   Appointment        @relation(fields: [oppointmentId], references: [id])
+  oppointmentId Int                @unique
+  doctor        Doctor             @relation(fields: [doctorId], references: [id])
+  doctorId      Int
+  recipesDesc   Json[]
+  medicines     MedicinesRecipes[]
+}
+
+model TestInfo {
+  id            Int         @id @default(autoincrement())
+  link          String?
+  name          String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  medicalTest   MedicalTest @relation(fields: [medicalTestId], references: [id])
+  medicalTestId Int
+}
+
+model Receipts {
+  id            Int         @id @default(autoincrement())
+  observations  String?     @default("")
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  appointmentId Int         @unique
+}
+
+model Diagnostics {
+  id            Int         @id @default(autoincrement())
   anamnesis     String
   clinicalExam  String
   diagnostic    String[]
   observations  String?     @default("")
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  appointmentId Int         @unique
+  doctor        Doctor      @relation(fields: [doctorId], references: [id])
+  doctorId      Int
 }
 
-model Doctors {
-  id               String          @id @default(auto()) @map("_id") @db.ObjectId
-  user             User            @relation(fields: [userId], references: [id])
-  userId           String          @unique @db.ObjectId
-  medical_relation String
-  cieCod           Int?
-  diagnostics      diagnostics[]
-  receipts         receipts[]
-  recipes          recipes[]
-  medical_tests    medical_tests[]
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
-  Appointment      Appointment[]
+model Doctor {
+  id              Int           @id @default(autoincrement())
+  medicalRelation String
+  cieCod          Int?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  user            User          @relation(fields: [userId], references: [id])
+  userId          Int           @unique
+  appointment     Appointment[]
+  medicalTest     MedicalTest[]
+  recipes         Recipes[]
+  diagnostics     Diagnostics[]
 }
 
 model Medicines {
-  id               String       @id @default(auto()) @map("_id") @db.ObjectId
-  name             String
-  description      String?
-  category         String?
-  full_description String?
-  price            Float
-  currency_type    CURRENCY     @default(PEN)
-  cod_internal     Int          @unique
-  has_igv          Boolean      @default(false)
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
-  recipesIds       String[]     @db.ObjectId
-  recipes          recipes[]    @relation(fields: [recipesIds], references: [id])
-  corporationId    String       @db.ObjectId
-  corporation      corporation? @relation(fields: [corporationId], references: [id], onDelete: Cascade)
+  id              Int                @id @default(autoincrement())
+  name            String
+  description     String?
+  category        String?
+  fullDescription String?
+  price           Float
+  currencyType    CURRENCY           @default(PEN)
+  codInternal     Int                @unique
+  hasIgv          Boolean            @default(false)
+  quantity        Int
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  corporation     Corporation        @relation(fields: [corporationId], references: [id])
+  corporationId   Int
+  recipes         MedicinesRecipes[]
+  pharmacy        Pharmacy           @relation(fields: [pharmacyId], references: [id])
+  pharmacyId      Int
+}
+
+model MedicinesRecipes {
+  recipes     Recipes   @relation(fields: [recipesId], references: [id])
+  recipesId   Int
+  medicines   Medicines @relation(fields: [medicinesId], references: [id])
+  medicinesId Int
+
+  @@id([recipesId, medicinesId])
+}
+
+model Pharmacy {
+  id            Int         @id @default(autoincrement())
+  medicines     Medicines[]
+  corporation   Corporation @relation(fields: [corporationId], references: [id])
+  corporationId Int         @unique
+}
+
+model Laboratory {
+  id            Int           @id @default(autoincrement())
+  medicalTest   MedicalTest[]
+  corporation   Corporation   @relation(fields: [corporationId], references: [id])
+  corporationId Int           @unique
 }

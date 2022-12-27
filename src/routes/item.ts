@@ -1,12 +1,27 @@
-import { Router,Request,Response } from "express";
+import { Request, Response, Router } from "express";
+import { request } from "http";
+// import {
+//   deleteItem,
+//   getItem,
+//   getItems,
+//   postItem,
+//   updateItem,
+// } from "../controllers/item";
+// import { logMiddleware } from "../middleware/log";
 
 const router = Router();
-router.get('/items',(req:Request,res:Response)=>{
-    res.send({data:'here van los modelos'})
 
-    
+router.get('/item',(req:Request,res:Response)=>{
+    res.send({user:'jery'})
 
 })
 
+// router.get("/:id", logMiddleware, getItem);
 
-export {router};
+// router.post("/", postItem);
+
+// router.put("/:id", updateItem);
+
+// router.delete("/:id", deleteItem);
+
+export { router };
