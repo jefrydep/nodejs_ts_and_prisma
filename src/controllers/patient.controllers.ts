@@ -31,6 +31,7 @@ export const registerPatient = async (req: Request, res: Response) => {
       console.log(req.body);
       res.status(201).json(result);
     } catch (error: Prisma.PrismaClientKnownRequestError | any) {
+      console.log(error)
       if (error.code=="P2002"){ res.status(400).json({ error:"patient exist" });}
       if (error.code=="P2025"){res.status(400).json({ error:"not corporation" });}
       else{
@@ -71,12 +72,7 @@ export const deletePatient = async(req: Request, res: Response, next:NextFunctio
     const convertId = parseInt(id);
     if (typeof convertId === "number" && convertId >= 0) {
       const result = await PatientServices.deletePatient(convertId);
-      //res.status(204).json(result);
-      next({
-        status: 204,
-        message: "Patient: Paciente eliminado correctamente!",
-        errorContent: "Patient removed successfully",
-      });
+      res.status(204).json(result);
     } else {
       next({
         status: 400,

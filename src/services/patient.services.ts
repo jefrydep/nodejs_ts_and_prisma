@@ -107,8 +107,7 @@ export class PatientServices {
   static async updatePatient(
     data: patientUpdatePick, id: Patient["id"]) {
     try {
-      console.log(data);
-      
+      console.log(data); 
       const result = await prisma.patient.update({
         where : { id },
         data: data
