@@ -77,7 +77,7 @@ model Patient {
   bloodType       String
   physicalHistory String
   image           String?
-  jod             String?
+  job             String?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   corporation     Corporation?  @relation(fields: [corporationId], references: [id])

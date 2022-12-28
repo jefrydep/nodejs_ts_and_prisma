@@ -3,36 +3,14 @@ import { patientPick, patientUpdatePick } from "../utils/format.server";
 const prisma = new PrismaClient();
 
 export class PatientServices {
+
   static async getPatient() {
     try {
       const result = await prisma.patient.findMany({
-        select: {
-            firstName: true,
-            lastName: true,
-            documentNumber: true,
-            dateBirth: true,
-            location: true,
-            gender: true,
-            numberPhone: true,
-            department: true,
-            province: true,
-            district: true,
-            bloodType: true,
-            physicalHistory: true,
-            image: true,
-            jod: true,
-            corporation: {
-              select:{
-                id: true,
-                name: true,
-                ruc: true,
-                fullDescription: true,
-                apiRoute: true,
-              }
-            }
-        },
-        
-      });
+        include: {
+          corporation: { }
+        }
+      })
       return result;
     } catch (error) {
       throw error;
@@ -77,7 +55,7 @@ export class PatientServices {
         bloodType,
         physicalHistory,
         image,
-        jod,
+        job,
         corporationId } = data;
       const result = await prisma.patient.create({
         data: {
@@ -94,7 +72,7 @@ export class PatientServices {
             bloodType,
             physicalHistory,
             image,
-            jod,
+            job,
             corporation: { connect: { id: corporationId } },
         },
       });
@@ -109,7 +87,7 @@ export class PatientServices {
     try {
       console.log(data); 
       const result = await prisma.patient.update({
-        where : { id },
+        where: { id },
         data: data
       });
       return result;

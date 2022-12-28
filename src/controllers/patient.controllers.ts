@@ -32,8 +32,9 @@ export const registerPatient = async (req: Request, res: Response) => {
       res.status(201).json(result);
     } catch (error: Prisma.PrismaClientKnownRequestError | any) {
       console.log(error)
-      if (error.code=="P2002"){ res.status(400).json({ error:"patient exist" });}
+      if (error.code=="P2002"){res.status(400).json({ error:"patient exist" });}
       if (error.code=="P2025"){res.status(400).json({ error:"not corporation" });}
+      if (error.code=="P2013"){res.status(400).json({ error:"required argument" });}
       else{
         res.status(400).json({error})
       }
