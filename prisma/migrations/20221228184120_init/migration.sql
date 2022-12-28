@@ -70,7 +70,7 @@ CREATE TABLE "Patient" (
     "bloodType" TEXT NOT NULL,
     "physicalHistory" TEXT NOT NULL,
     "image" TEXT,
-    "jod" TEXT,
+    "job" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "corporationId" INTEGER NOT NULL,

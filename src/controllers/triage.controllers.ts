@@ -19,8 +19,7 @@ export const createTriage = async (req: Request, res: Response) => {
       res.status(201).json(result);
     } catch (error: Prisma.PrismaClientKnownRequestError | any) {
       console.log(error);
-      //if (error.code == "P2013")
-      //if (error.code=="P2014"){res.status(400).json({ error:"relationship violation" });}
+      if (error.code=="P2014"){res.status(400).json({ error:"relationship violation" });}
       if (error.code=="P2025"){res.status(400).json({ error:"not appointment" });}
       else{
         res.status(400).json({error})
