@@ -5,7 +5,7 @@ import { PrismaClient } from "@prisma/client";
 import { route } from "./routes/user.routes";
 import { authRoutes } from "./routes/auth.routes";
 import { handleError } from "./middlewares/error.middlewares";
-import { routes } from "./routes/patient.routers";
+import { routes } from "./routes/patient.routes";
 import { routeTriage } from "./routes/triage.routes";
 
 const app = express();
