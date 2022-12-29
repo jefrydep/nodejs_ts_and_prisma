@@ -12,3 +12,11 @@ export const handleError = async (
   console.log(error);
   res.status(status).json({ message, errorContent });
 };
+
+//export c//onst patientError = async (
+//  req: Request,
+//  res: Response,
+//) => {
+//  const { status, message } = ;
+//  res.status(status).json({ message });
+//}

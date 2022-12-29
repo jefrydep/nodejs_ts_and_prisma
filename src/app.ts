@@ -5,6 +5,7 @@ import { PrismaClient } from "@prisma/client";
 import { route } from "./routes/user.routes";
 import { authRoutes } from "./routes/auth.routes";
 import { handleError } from "./middlewares/error.middlewares";
+//import { patientError } from "./middlewares/error.middlewares";
 import { routes } from "./routes/patient.routes";
 import { routeTriage } from "./routes/triage.routes";
 
@@ -19,6 +20,7 @@ app.use(cors());
 // app.use(router);
 // 
 const prisma = new PrismaClient();
+
 
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({ message: "ok" });

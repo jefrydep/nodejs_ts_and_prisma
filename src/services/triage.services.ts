@@ -18,8 +18,7 @@ export class TriageServices {
   };
 
   static async Create(
-    data: triagePick & { appointmentId: Appointment["id"] }
-  ) {
+    data: triagePick & { appointmentId: Appointment["id"] }){
     try {
       const {          
         weight,        

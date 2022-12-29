@@ -19,7 +19,7 @@ export const createTriage = async (req: Request, res: Response, next: NextFuncti
       res.status(201).json(result);      
     } catch (error: Prisma.PrismaClientKnownRequestError | any) {
       console.log(error);
-      if (error.code=="P2025"){res.status(400).json({ error:"not exist appointmentId"});}
+        if (error.code=="P2025"){res.status(400).json({ error:"not exist appointmentId"});}
         if (error.code=="P2014"){res.status(400).json({ error:"duplicate argument in appointmentId" });}
         else{
           next({
@@ -58,16 +58,16 @@ export const patchTriage = async(req: Request, res: Response, next: NextFunction
 
 export const updateTriage = async(req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params;      
-      const convertId = parseInt(id);
-      const data = req.body;      
+      const { id } = req.params;
+      const data = req.body;       
+      const convertId = parseInt(id);     
       if (typeof convertId === "number" && convertId >= 0){
         const result = await TriageServices.Update(data, convertId);
         res.status(200).json(result);        
       }
     } catch (error: Prisma.PrismaClientKnownRequestError | any) {
       console.log(error);
-      if (error.code=="P2025"){res.status(400).json({ error:"not exist Id triage"});}
+        if (error.code=="P2025"){res.status(400).json({ error:"not exist Id triage"});}
         if (error.code=="P2003"){res.status(400).json({ error:"appointmentId invalid"});}
         else{
           next({
