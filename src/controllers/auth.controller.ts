@@ -9,6 +9,7 @@ export const login = async (req: Request, res: Response) => {
       console.log(token);
     }
     console.log(result);
+    
 
     res.json(result);
   } catch (error) {
