@@ -18,9 +18,7 @@ export const registerPatient = async (req: Request, res: Response, next: NextFun
       res.status(201).json(result);
     } catch (error: Prisma.PrismaClientKnownRequestError | any) {
       console.log(error)
-      //if (error.code=="P2002"){res.status(400).json({ error:"patient exist" });}
         if (error.code=="P2025"){res.status(400).json({ error:"not exist corporationId" });}
-        //if (error.code=="P2013"){res.status(400).json({ error:"required argument" });}
         else{
           res.status(400).json({error})
       }
@@ -33,10 +31,10 @@ export const patchPatient = async(req: Request, res: Response) => {
       const convertId = parseInt(id);
       if (typeof convertId === "number" && convertId >= 0){
       const result = await PatientServices.listPatient(convertId);
-      res.json(result);
+      res.status(200).json(result);
       };
-    } catch (error) {
-      res.json({error: "error"});      
+    } catch (error: Prisma.PrismaClientKnownRequestError | any) {
+      res.status(400).json({error: "error"});      
     }
   };
 

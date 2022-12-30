@@ -1,5 +1,5 @@
 import { Triage, Appointment, PrismaClient } from "@prisma/client";
-import { triagePick } from "../utils/format.server";
+import {  } from "../utils/format.server";
 const prisma = new PrismaClient();
 
 export class TriageServices {
@@ -18,7 +18,7 @@ export class TriageServices {
   };
 
   static async Create(
-    data: triagePick & { appointmentId: Appointment["id"] }){
+    data: Triage & { appointmentId: Appointment["id"] }){
     try {
       const {          
         weight,        
@@ -72,7 +72,7 @@ export class TriageServices {
   };
 
   static async Update(
-    data: triagePick, id: Triage["id"]) {
+    data: Triage, id: Triage["id"]) {
     try {
       const result = await prisma.triage.update({
         where: { id },

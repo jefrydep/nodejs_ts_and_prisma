@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 
 export const verifyPatient = async (req: Request, res: Response, next: NextFunction) => {
     const { firstName, lastName, documentNumber, dateBirth, gender, bloodType, physicalHistory, corporationId } = req.body;
-
     if (typeof firstName !== "string" || firstName.length <= 0) {
         res.status(400).json({ error: `Value ' ${firstName} ' is not set in firstName` })
     }

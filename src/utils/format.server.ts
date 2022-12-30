@@ -22,25 +22,6 @@ export type userProfilePick = Pick<
   | "image"
 >;
 
-export type patientPick = Pick<
-  Patient,
-  |"firstName"
-  | "lastName"
-  | "documentNumber"
-  | "dateBirth"
-  | "location"
-  | "gender"
-  | "numberPhone"
-  | "department"
-  | "province"
-  | "district"
-  | "bloodType"
-  | "physicalHistory"
-  | "image"
-  | "job"
-  | "corporationId"
->;
-
 export type patientUpdatePick = Pick<
   Patient,
   | "location"
@@ -50,19 +31,6 @@ export type patientUpdatePick = Pick<
   | "district"
   | "image"
   | "job"
->;
-
-export type triagePick = Pick<
-  Triage,            
-  | "weight"        
-  | "height"       
-  | "temperature"   
-  | "heardRate"     
-  | "bloodPressure" 
-  | "daysSick"      
-  | "sature"        
-  | "observations"
-  | "appointmentId"
 >;
 
 export type errorProp ={

@@ -5,9 +5,10 @@ import { PrismaClient } from "@prisma/client";
 import { route } from "./routes/user.routes";
 import { authRoutes } from "./routes/auth.routes";
 import { handleError } from "./middlewares/error.middlewares";
-//import { patientError } from "./middlewares/error.middlewares";
 import { routes } from "./routes/patient.routes";
 import { routeTriage } from "./routes/triage.routes";
+import { routeDiagnostics } from "./routes/diagnostics.routes";
+import { routeRecipes } from "./routes/recipes.routes";
 
 const app = express();
 require("dotenv").config();
@@ -30,6 +31,8 @@ app.use("/api", route);
 app.use("/api", authRoutes);
 app.use("/api", routes);
 app.use("/api", routeTriage);
+app.use("/api", routeDiagnostics);
+app.use("/api", routeRecipes);
 app.use(handleError)
 
 app.listen(PORT, () => {

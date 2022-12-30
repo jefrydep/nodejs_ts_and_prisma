@@ -1,5 +1,5 @@
 import { Patient, Corporation, PrismaClient } from "@prisma/client";
-import { patientPick, patientUpdatePick } from "../utils/format.server";
+import { patientUpdatePick } from "../utils/format.server";
 const prisma = new PrismaClient();
 
 export class PatientServices {
@@ -38,7 +38,7 @@ export class PatientServices {
   }
 
   static async createPatient(
-    data: patientPick & { corporationId: Corporation["id"] }
+    data: Patient & { corporationId: Corporation["id"] }
   ) {
     try {
       const { 
