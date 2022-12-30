@@ -14,6 +14,7 @@ export const showDoctor = async (req: Request, res: Response) => {
 export const createDoctor = async (req: Request, res: Response) => {
   try {
     const result = await doctorServices.create(req.body);
+    console.log(result)
     res.status(201).json(result);
   } catch (error) {
     console.log(error);
