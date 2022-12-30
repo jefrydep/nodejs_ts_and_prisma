@@ -37,7 +37,7 @@ model Corporation {
 
 model User {
   id             Int         @id @default(autoincrement())
-  documentNumber String      @unique
+  documentNumber String     @unique
   password       String
   role           Role        @default(ADMIN)
   createdAt      DateTime    @default(now())
@@ -69,7 +69,7 @@ model Patient {
   location        String?
   gender          String
   numberPhone     String?
-  department      String?
+  departament     String?
   province        String?
   district        String?
   bloodType       String
