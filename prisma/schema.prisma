@@ -33,7 +33,6 @@ model Corporation {
   medicines       Medicines[]
   pharmacy        Pharmacy?
   laboratory      Laboratory?
-
 }
 
 model User {
@@ -57,16 +56,15 @@ model Profile {
   email     String  @unique
   degree    String?
   image     String?
-  user      User    @relation(fields: [userId], references: [id],onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int     @unique
 }
 
 model Patient {
-
   id              Int           @id @default(autoincrement())
   firstName       String
   lastName        String
-  documentNumber  String        
+  documentNumber  String
   dateBirth       String
   location        String?
   gender          String
@@ -77,7 +75,7 @@ model Patient {
   bloodType       String
   physicalHistory String
   image           String?
-  jod             String?
+  job             String?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   corporation     Corporation?  @relation(fields: [corporationId], references: [id])
@@ -88,7 +86,7 @@ model Patient {
 model Appointment {
   id               Int                   @id @default(autoincrement())
   corporationId    String
-  documentNumber   String                
+  documentNumber   String
   firstName        String
   lastName         String
   numberPhone      String
@@ -143,7 +141,7 @@ enum PAYMENT {
 model Services {
   id              Int                   @id @default(autoincrement())
   name            String
-  descrption      String?
+  description     String?
   category        String?
   fullDescription String?
   price           Float
@@ -195,12 +193,11 @@ model MedicalTest {
 
 model Recipes {
   id            Int                @id @default(autoincrement())
-  recipesDes    Json
   observations  String?            @default("")
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
-  appointment   Appointment        @relation(fields: [oppointmentId], references: [id])
-  oppointmentId Int                @unique
+  appointment   Appointment        @relation(fields: [appointmentId], references: [id])
+  appointmentId Int                @unique
   doctor        Doctor             @relation(fields: [doctorId], references: [id])
   doctorId      Int
   recipesDesc   Json[]
@@ -295,8 +292,4 @@ model Laboratory {
   medicalTest   MedicalTest[]
   corporation   Corporation   @relation(fields: [corporationId], references: [id])
   corporationId Int           @unique
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime
-  //corporation     Corporation? @relation(fields: [corporationId], references: [id])
-  //corporationId   Int
 }
