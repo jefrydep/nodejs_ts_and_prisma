@@ -43,6 +43,7 @@ export type patientPick = Pick<
   | "corporationId"
 >;
 
+<<<<<<< HEAD
 export type doctorPick = Pick<Doctor,
 |"medicalRelation"
 |"cieCod"
@@ -56,3 +57,19 @@ export type errorProp ={
   message:string;
 }
 
+=======
+export type profileUpdatePick = Pick<
+  User & Profile,
+  "id" | "firstName" | "lastName" | "phone" | "degree" | "image"
+>;
+
+export type corporationCreatePick = Pick<
+  Corporation,
+  "name" | "ruc" | "fullDescription"
+>;
+export type errorProp = {
+  errorContent?: string;
+  status: number;
+  message: string;
+};
+>>>>>>> 6ae58554414aae89bca8c770ad41cc6c54ad8a14
