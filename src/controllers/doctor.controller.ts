@@ -11,20 +11,37 @@ export const showDoctor = async (req: Request, res: Response) => {
   }
 };
 
-export const createDoctor = async (req: Request, res: Response) => {
+export const createDoctor = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const result = await doctorServices.create(req.body);
-    console.log(result)
+    // console.log(result)
     res.status(201).json(result);
-  } catch (error) {
+  } catch (error: Prisma.PrismaClientKnownRequestError | any) {
+    if (error.code === "P2014") {
+      next({
+        status: 400,
+        message: "Usuario no encontrado",
+        errorContent: "error, user not found",
+      });
+    } else {
+      console.log("error");
+    }
     console.log(error);
-    res.status(400).json(error);
+    // res.status(400).json(error);
   }
 };
 
-export const deleteDoctor = async (req: Request, res: Response,next:NextFunction) => {
+export const deleteDoctor = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { id } = req.params
+    const { id } = req.params;
     const convertId = parseInt(id);
     if (typeof convertId === "number" && convertId >= 0) {
       const result = await doctorServices.delete(convertId);
@@ -36,7 +53,7 @@ export const deleteDoctor = async (req: Request, res: Response,next:NextFunction
         errorContent: "Error insert a valid Id",
       });
     }
-  } catch (error: Prisma.PrismaClientKnownRequestError |any) {
+  } catch (error: Prisma.PrismaClientKnownRequestError | any) {
     if (error.code == "P2025") {
       next({
         status: 400,
@@ -47,46 +64,46 @@ export const deleteDoctor = async (req: Request, res: Response,next:NextFunction
   }
 };
 
-export const updateDoctor = async (req: Request, res: Response,next:NextFunction) => {
-
-
-try {
-  const {id}=req.params;
-  const convertId  = parseInt(id);
-  const {cieCod,medicalRelation}= req.body;
-  if (typeof convertId === "number" && convertId >= 0) {
-     
-    if (cieCod & medicalRelation) {
-      const result = await doctorServices.update(convertId,cieCod,medicalRelation);
-      res.status(200).json(result);
+export const updateDoctor = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+    const convertId = parseInt(id);
+    const { cieCod, medicalRelation } = req.body;
+    if (typeof convertId === "number" && convertId >= 0) {
+      if (cieCod & medicalRelation) {
+        const result = await doctorServices.update(
+          convertId,
+          cieCod,
+          medicalRelation
+        );
+        res.status(200).json(result);
+      } else {
+        next({
+          status: 400,
+          message: "user exitente",
+          errorContent: "user not found",
+        });
+      }
     } else {
       next({
-        status:400,
-        message:"user exitente",
-        errorContent:"user not found",
-      })
+        status: 400,
+        message: "Error, ingrese un Id válido",
+        errorContent: "Error insert a valid Id",
+      });
     }
-  } else {
-    next({
-      status: 400,
-      message: "Error, ingrese un Id válido",
-      errorContent: "Error insert a valid Id",
-    });
+  } catch (error: Prisma.PrismaClientKnownRequestError | any) {
+    if (error.code == "P2025") {
+      next({
+        status: 400,
+        message: "Error, usuario no encontrado para actualizar!",
+        errorContent: error.meta.cause,
+      });
+    }
   }
-} catch (error:Prisma.PrismaClientKnownRequestError | any) {
-  if(error.code=="P2025"){
-    next({
-      status:400,
-      message:"Error, usuario no encontrado para actualizar!",
-      errorContent:error.meta.cause,
-    })
-  }
-
-
-}
-
-
-
 };
 
 // export const showDoctor = async (req: Request, res: Response) => {};
