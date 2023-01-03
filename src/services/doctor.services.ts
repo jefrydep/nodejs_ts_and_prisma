@@ -7,6 +7,7 @@ export class doctorServices {
     try {
       const result = await prisma.doctor.findMany({
         select: {
+          id: true,
           cieCod: true,
           userId: true,
 
@@ -14,7 +15,6 @@ export class doctorServices {
           user: {
             include: {
               profile: true,
-
             },
           },
         },
@@ -24,28 +24,26 @@ export class doctorServices {
       throw error;
     }
   }
-  static async get(id:Doctor["id"]){
+  static async get(id:Doctor["id"]) {
     try {
       const result = await prisma.doctor.findUnique({
-        where:{id},
-        select:{
-          appointment:true,
-          cieCod:true,
+        where: { id },
+        select: {
+          appointment: true,
+          cieCod: true,
           user: {
             include: {
               profile: true,
             },
           },
-        }
-       
+        },
       });
       return result;
     } catch (error) {
       throw error;
-      
     }
   }
-  static async create(data: doctorPick & {  userId: User["id"] }) {
+  static async create(data: doctorPick & { userId: User["id"] }) {
     try {
       const { cieCod, medicalRelation, userId } = data;
       const newDoctor = await prisma.doctor.create({

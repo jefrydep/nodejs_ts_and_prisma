@@ -1,6 +1,6 @@
 import { Corporation, Laboratory } from "@prisma/client";
 import { prisma } from "../utils/prisma.server";
-import { laboratyPick } from "~/utils/format.server";
+import { laboratyPick } from "../utils/format.server";
 export class laboratoryServices {
   static async getAllLaboratories() {
     try {

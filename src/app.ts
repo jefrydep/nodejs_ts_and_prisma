@@ -3,7 +3,7 @@ import cors from "cors";
 import morgan from "morgan";
 import { prisma } from "./utils/prisma.server";
 import { handleError } from "./middlewares/error.middleware";
-import { docRoute, labRoute } from "./routes";
+import { docRoute, labRoute, receiptsRoute } from "./routes";
 export const app = express();
 require("dotenv").config();
 
@@ -15,6 +15,7 @@ app.use(express.json());
 app.use(cors());
 app.use('/api',docRoute)
 app.use('/api',labRoute)
+app.use('/api',receiptsRoute)
 
 
 app.use(handleError)
