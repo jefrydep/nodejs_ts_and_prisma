@@ -17,10 +17,34 @@ export class doctorServices {
           },
         },
       });
-      console.log(result)
+      // console.log(result)
       return result;
     } catch (error) {
       throw error;
+    }
+  }
+  static async getOne(id:Doctor["id"]){
+    try {
+      const result = await prisma.doctor.findUnique({
+        where:{id},
+        select:{
+          appointment:true,
+          cieCod:true,
+          user: {
+            include: {
+              profile: true,
+            },
+          },
+        }
+       
+        // include:{user:true}
+      });
+      // console.log(result)
+      return result;
+    } catch (error) {
+      console.log(error)
+      throw error;
+      
     }
   }
   static async create(data: doctorPick & { userId: User["id"] }) {
