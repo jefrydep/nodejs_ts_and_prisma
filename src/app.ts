@@ -4,6 +4,7 @@ import morgan from "morgan";
 import { prisma } from "./utils/prisma.server";
 import { handleError } from "./middlewares/error.middleware";
 import { docRoute } from "./routes/doctor.route";
+import { labRoute } from "./routes/laboratory.route";
 export const app = express();
 require("dotenv").config();
 
@@ -13,12 +14,13 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors());
 app.use('/api',docRoute)
-//
+app.use('/api',labRoute)
+
 
 app.use(handleError)
-// app.get("/", (req: Request, res: Response) => {
-//   prisma;
-//   res.status(200).json({ message: "ok" });
-// });
+app.get("/", (req: Request, res: Response) => {
+  prisma;
+  res.status(200).json({ message: "ok" });
+});
 
 export default app;

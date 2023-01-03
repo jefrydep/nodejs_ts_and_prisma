@@ -9,15 +9,16 @@ export class doctorServices {
         select: {
           cieCod: true,
           userId: true,
+
           medicalRelation: true,
           user: {
             include: {
               profile: true,
+
             },
           },
         },
       });
-      // console.log(result)
       return result;
     } catch (error) {
       throw error;
@@ -37,9 +38,7 @@ export class doctorServices {
           },
         }
        
-        // include:{user:true}
       });
-      // console.log(result)
       return result;
     } catch (error) {
       console.log(error)
@@ -47,7 +46,7 @@ export class doctorServices {
       
     }
   }
-  static async create(data: doctorPick & { userId: User["id"] }) {
+  static async create(data: doctorPick & {  userId: User["id"] }) {
     try {
       const { cieCod, medicalRelation, userId } = data;
       const newDoctor = await prisma.doctor.create({

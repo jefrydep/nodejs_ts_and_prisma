@@ -10,12 +10,16 @@ export const showDoctor = async (req: Request, res: Response) => {
     res.json({ error: "error" });
   }
 };
-export const showDoctorBy = async(req:Request,res:Response,next:NextFunction)=>{
+export const showDoctorBy = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
-    console.log(id)
+    console.log(id);
     const convertId = parseInt(id);
-    if (typeof convertId === "number" && convertId >= 0 ) {
+    if (typeof convertId === "number" && convertId >= 0) {
       const result = await doctorServices.getOne(convertId);
       res.status(200).json(result);
     } else {
@@ -23,13 +27,12 @@ export const showDoctorBy = async(req:Request,res:Response,next:NextFunction)=>{
         status: 400,
         message: "Error, ingrese un Id válido",
         errorContent: "Error insert a valid Id",
-      })
+      });
     }
-
   } catch (error) {
-    res.json({error:"error"})
+    res.json({ error: "error" });
   }
-}
+};
 
 export const createDoctor = async (
   req: Request,
@@ -38,7 +41,6 @@ export const createDoctor = async (
 ) => {
   try {
     const result = await doctorServices.create(req.body);
-    // console.log(result)
     res.status(201).json(result);
   } catch (error: Prisma.PrismaClientKnownRequestError | any) {
     if (error.code === "P2014") {
@@ -86,14 +88,12 @@ export const deleteDoctor = async (
         message: "Error al eliminar a un usuario inexistente!",
         errorContent: error.meta.cause,
       });
-    }
-    else if(error.code == "P2003"){
+    } else if (error.code == "P2003") {
       next({
-        status:400,
-        message:"error :no puedes eliminar ",
-        errorContent: error.meta.cause
-        
-      })
+        status: 400,
+        message: "error :no puedes eliminar ",
+        errorContent: error.meta.cause,
+      });
     }
   }
 };
@@ -108,7 +108,7 @@ export const updateDoctor = async (
     const convertId = parseInt(id);
     const { cieCod, medicalRelation } = req.body;
     if (typeof convertId === "number" && convertId >= 0) {
-      if (cieCod & medicalRelation) {
+      if (cieCod && medicalRelation) {
         const result = await doctorServices.update(
           convertId,
           cieCod,
@@ -139,11 +139,3 @@ export const updateDoctor = async (
     }
   }
 };
-
-// export const showDoctor = async (req: Request, res: Response) => {};
-
-// export const createDoctor = async (req: Request, res: Response) => {};
-
-// export const deleteDoctor = async (req: Request, res: Response) => {};
-
-// export const updateDoctor = async (req: Request, res: Response) => {};
