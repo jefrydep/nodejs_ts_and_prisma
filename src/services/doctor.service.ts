@@ -1,6 +1,6 @@
 import { Doctor, User } from "@prisma/client";
 import { prisma } from "../utils/prisma.server";
-import { doctorPick } from "~/utils/format.server";
+import { doctorPick } from "../utils/format.server";
 
 export class doctorServices {
   static async getAll() {
@@ -17,6 +17,7 @@ export class doctorServices {
           },
         },
       });
+      console.log(result)
       return result;
     } catch (error) {
       throw error;
@@ -44,27 +45,30 @@ export class doctorServices {
       const result = await prisma.doctor.delete({
         where: { id },
       });
-      console.log(result)
+      console.log(result);
       return result;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       throw error;
     }
   }
 
-  static async update(id:Doctor["id"],cieCod:Doctor["cieCod"],medicalRelation:Doctor["medicalRelation"]) {
+  static async update(
+    id: Doctor["id"],
+    cieCod: Doctor["cieCod"],
+    medicalRelation: Doctor["medicalRelation"]
+  ) {
     try {
       const result = await prisma.doctor.update({
-        where:{id},
-        data:{
+        where: { id },
+        data: {
           cieCod,
-          medicalRelation
-        }
-      })
+          medicalRelation,
+        },
+      });
       return result;
     } catch (error) {
       throw error;
-      
     }
   }
 }

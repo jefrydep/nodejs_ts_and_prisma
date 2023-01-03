@@ -24,8 +24,14 @@ export const createDoctor = async (
     if (error.code === "P2014") {
       next({
         status: 400,
-        message: "Usuario no encontrado",
-        errorContent: "error, user not found",
+        message: "el usuario ya existe",
+        errorContent: "error, user already exit",
+      });
+    } else if (error.code === "P2025") {
+      next({
+        status: 400,
+        message: "Usuario no encontrado ",
+        errorContent: "User not found",
       });
     } else {
       console.log("error");
