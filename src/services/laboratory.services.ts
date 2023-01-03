@@ -30,11 +30,13 @@ export class laboratoryServices {
         const {corporationId}=data;
         const newLaboratorie = await prisma.laboratory.create({
             data:{
+                
                 corporation:{connect:{id:corporationId}}
             }
         })
         return newLaboratorie;
     } catch (error) {
+        throw error;
 
     }
   }

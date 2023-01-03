@@ -24,7 +24,7 @@ export class doctorServices {
       throw error;
     }
   }
-  static async getOne(id:Doctor["id"]){
+  static async get(id:Doctor["id"]){
     try {
       const result = await prisma.doctor.findUnique({
         where:{id},
@@ -41,7 +41,6 @@ export class doctorServices {
       });
       return result;
     } catch (error) {
-      console.log(error)
       throw error;
       
     }
@@ -68,10 +67,8 @@ export class doctorServices {
       const result = await prisma.doctor.delete({
         where: { id },
       });
-      console.log(result);
       return result;
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }

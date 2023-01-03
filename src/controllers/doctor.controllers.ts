@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { doctorServices } from "../services/doctor.service";
 import { Prisma } from "@prisma/client";
+import { doctorServices } from "../services";
 
-export const showDoctor = async (req: Request, res: Response) => {
+export const showAllDoctor = async (req: Request, res: Response) => {
   try {
     const result = await doctorServices.getAll();
     res.status(200).json(result);
@@ -17,10 +17,9 @@ export const showDoctorBy = async (
 ) => {
   try {
     const { id } = req.params;
-    console.log(id);
     const convertId = parseInt(id);
     if (typeof convertId === "number" && convertId >= 0) {
-      const result = await doctorServices.getOne(convertId);
+      const result = await doctorServices.get(convertId);
       res.status(200).json(result);
     } else {
       next({
@@ -35,12 +34,13 @@ export const showDoctorBy = async (
 };
 
 export const createDoctor = async (
-  req: Request,
+  {body}: Request,
   res: Response,
   next: NextFunction
 ) => {
+  
   try {
-    const result = await doctorServices.create(req.body);
+    const result = await doctorServices.create(body);
     res.status(201).json(result);
   } catch (error: Prisma.PrismaClientKnownRequestError | any) {
     if (error.code === "P2014") {
@@ -58,12 +58,11 @@ export const createDoctor = async (
     } else {
       console.log("error");
     }
-    console.log(error);
     res.status(400).json(error);
   }
 };
 
-export const deleteDoctor = async (
+export const removeDoctor = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -118,8 +117,8 @@ export const updateDoctor = async (
       } else {
         next({
           status: 400,
-          message: "user exitente",
-          errorContent: "user not found",
+          message: "you shoud update 'cieCod' and 'medicalRelation'",
+          errorContent: "it's needs values",
         });
       }
     } else {

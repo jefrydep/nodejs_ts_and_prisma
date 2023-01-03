@@ -1,6 +1,6 @@
 import { Prisma, Role, prisma } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
-import { userServices } from "../services/user.service";
+import { userServices } from "../services/user.services";
 
 export const showUser = async (req: Request, res: Response) => {
   try {

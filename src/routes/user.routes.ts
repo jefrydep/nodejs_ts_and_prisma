@@ -19,7 +19,7 @@ import {
   registerUser,
   showUser,
   updateRole,
-} from "../controllers/user.controller";
+} from "../controllers/user.controllers";
 // import { authenticate } from "../middlewares/auth.middlewares";
 
 const app = express();

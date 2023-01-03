@@ -3,10 +3,10 @@ import cors from "cors";
 import morgan from "morgan";
 import { prisma } from "./utils/prisma.server";
 import { handleError } from "./middlewares/error.middleware";
-import { docRoute } from "./routes/doctor.route";
-import { labRoute } from "./routes/laboratory.route";
+import { docRoute, labRoute } from "./routes";
 export const app = express();
 require("dotenv").config();
+
 
 const PORT = process.env.PORT;
 

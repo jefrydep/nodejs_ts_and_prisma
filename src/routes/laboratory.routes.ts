@@ -1,10 +1,10 @@
 import Router from "express"
-import { showLaboratories } from "../controllers/laboratory.controller"
+import { createLaboratory, showLaboratories } from "../controllers/laboratory.controllers"
 
 const labRoute = Router()
 
 labRoute.get("/laboratories",showLaboratories)
-// labRoute.get()
+labRoute.post("/laboratories",createLaboratory)
 // labRoute.get()
 // labRoute.get()
 

@@ -1,6 +1,5 @@
-import { NextFunction, Response } from "express";
-import { Request } from "express-jwt";
-import { laboratoryServices } from "../services/laboratory.service";
+import { NextFunction, Response ,Request} from "express";
+import { laboratoryServices } from "../services/laboratory.services";
 import { request } from "http";
 import { Prisma, prisma } from "@prisma/client";
 
